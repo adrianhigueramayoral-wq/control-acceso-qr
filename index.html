@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,
+           initial-scale=1,
+           maximum-scale=1,
+           user-scalable=no">
+
+<title>
+Control de Acceso
+</title>
+
+
+<script
+  src="https://unpkg.com/html5-qrcode"
+  type="text/javascript">
+</script>
+
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+
+  margin: 0;
+
+  background:
+    #f3f6f9;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color:
+    #1f2937;
+
+}
+
+
+.app {
+
+  max-width:
+    520px;
+
+  margin:
+    auto;
+
+  min-height:
+    100vh;
+
+  background:
+    white;
+
+}
+
+
+.header {
+
+  background:
+    #173b65;
+
+  color:
+    white;
+
+  text-align:
+    center;
+
+  padding:
+    22px 15px;
+
+}
+
+
+.escuela {
+
+  font-size:
+    19px;
+
+  font-weight:
+    bold;
+
+}
+
+
+.titulo {
+
+  margin-top:
+    7px;
+
+  font-size:
+    15px;
+
+}
+
+
+.contenido {
+
+  padding:
+    18px;
+
+}
+
+
+.movimientos {
+
+  display:
+    flex;
+
+  gap:
+    10px;
+
+  margin-bottom:
+    18px;
+
+}
+
+
+.movimiento {
+
+  flex:
+    1;
+
+  padding:
+    15px;
+
+  border:
+    2px solid #d1d5db;
+
+  border-radius:
+    10px;
+
+  background:
+    white;
+
+  font-size:
+    18px;
+
+  font-weight:
+    bold;
+
+}
+
+
+.movimiento.activo {
+
+  background:
+    #173b65;
+
+  border-color:
+    #173b65;
+
+  color:
+    white;
+
+}
+
+
+.camara {
+
+  width:
+    100%;
+
+  padding:
+    16px;
+
+  margin-bottom:
+    15px;
+
+  border:
+    none;
+
+  border-radius:
+    10px;
+
+  background:
+    #166534;
+
+  color:
+    white;
+
+  font-size:
+    18px;
+
+  font-weight:
+    bold;
+
+}
+
+
+#reader {
+
+  width:
+    100%;
+
+  border-radius:
+    12px;
+
+  overflow:
+    hidden;
+
+  background:
+    black;
+
+}
+
+
+.info {
+
+  margin-bottom:
+    12px;
+
+  text-align:
+    center;
+
+  color:
+    #4b5563;
+
+}
+
+
+.procesando {
+
+  display:
+    none;
+
+  text-align:
+    center;
+
+  padding:
+    15px;
+
+  font-weight:
+    bold;
+
+}
+
+
+.resultado {
+
+  display:
+    none;
+
+  margin-top:
+    18px;
+
+  padding:
+    20px;
+
+  border-radius:
+    12px;
+
+  text-align:
+    center;
+
+}
+
+
+.correcto {
+
+  background:
+    #dcfce7;
+
+  border:
+    2px solid #22c55e;
+
+  color:
+    #166534;
+
+}
+
+
+.error {
+
+  background:
+    #fee2e2;
+
+  border:
+    2px solid #ef4444;
+
+  color:
+    #991b1b;
+
+}
+
+
+.duplicado {
+
+  background:
+    #fef3c7;
+
+  border:
+    2px solid #f59e0b;
+
+  color:
+    #92400e;
+
+}
+
+
+.resultadoTitulo {
+
+  font-size:
+    22px;
+
+  font-weight:
+    bold;
+
+}
+
+
+.nombre {
+
+  margin-top:
+    12px;
+
+  font-size:
+    21px;
+
+  font-weight:
+    bold;
+
+}
+
+
+.datos {
+
+  margin-top:
+    8px;
+
+  font-size:
+    18px;
+
+}
+
+
+.movimientoResultado {
+
+  margin-top:
+    12px;
+
+  font-size:
+    22px;
+
+  font-weight:
+    bold;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<div class="header">
+
+  <div class="escuela">
+
+    SECUNDARIA ERNESTO ROMERO LUCERO
+
+  </div>
+
+  <div class="titulo">
+
+    CONTROL DE ACCESO
+
+  </div>
+
+</div>
+
+
+<div class="contenido">
+
+
+<div class="movimientos">
+
+
+<button
+  id="entrada"
+  class="movimiento activo"
+  onclick="seleccionarMovimiento('ENTRADA')">
+
+  ENTRADA
+
+</button>
+
+
+<button
+  id="salida"
+  class="movimiento"
+  onclick="seleccionarMovimiento('SALIDA')">
+
+  SALIDA
+
+</button>
+
+
+</div>
+
+
+<button
+  id="btnCamara"
+  class="camara"
+  onclick="iniciarCamara()">
+
+  📷 INICIAR CÁMARA
+
+</button>
+
+
+<div class="info">
+
+  Coloca el código QR del alumno
+  frente a la cámara.
+
+</div>
+
+
+<div id="reader"></div>
+
+
+<div
+  id="procesando"
+  class="procesando">
+
+  Procesando registro...
+
+</div>
+
+
+<div
+  id="resultado"
+  class="resultado">
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+/*
+=================================================
+PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
+DEBE TERMINAR EN /exec
+=================================================
+*/
+
+const URL_API = 
+  'https://script.google.com/macros/s/AKfycbxeeSfxFcOKTFAbm8HMa8fGm_xpCAafd_HDfChpsBkiDoQbNMwG80ZjT0u1Ck1J4R1O/exec';
+
+
+let movimientoActual =
+  'ENTRADA';
+
+
+let lector =
+  null;
+
+
+let camaraActiva =
+  false;
+
+
+let procesando =
+  false;
+
+
+let ultimoQR =
+  '';
+
+
+let ultimaLectura =
+  0;
+
+
+
+function seleccionarMovimiento(
+  movimiento
+) {
+
+  movimientoActual =
+    movimiento;
+
+
+  document
+    .getElementById('entrada')
+    .classList
+    .toggle(
+      'activo',
+      movimiento === 'ENTRADA'
+    );
+
+
+  document
+    .getElementById('salida')
+    .classList
+    .toggle(
+      'activo',
+      movimiento === 'SALIDA'
+    );
+
+}
+
+
+
+async function iniciarCamara() {
+
+  if (
+    URL_API.includes(
+      'PEGA_AQUI'
+    )
+  ) {
+
+    mostrarError(
+      'Primero debes configurar la URL de Apps Script.'
+    );
+
+    return;
+
+  }
+
+
+  if (camaraActiva) {
+
+    return;
+
+  }
+
+
+  try {
+
+    lector =
+      new Html5Qrcode(
+        'reader'
+      );
+
+
+    await lector.start(
+
+      {
+        facingMode:
+          'environment'
+      },
+
+      {
+
+        fps:
+          12,
+
+        qrbox: {
+          width:
+            250,
+
+          height:
+            250
+        }
+
+      },
+
+      codigoDetectado,
+
+      () => {}
+
+    );
+
+
+    camaraActiva =
+      true;
+
+
+    document
+      .getElementById(
+        'btnCamara'
+      )
+      .textContent =
+      '✓ CÁMARA ACTIVA';
+
+
+  }
+
+  catch (error) {
+
+    mostrarError(
+      'No fue posible abrir la cámara: ' +
+      error
+    );
+
+  }
+
+}
+
+
+
+function codigoDetectado(
+  texto
+) {
+
+  if (procesando) {
+    return;
+  }
+
+
+  const curp =
+    String(
+      texto || ''
+    )
+      .trim()
+      .toUpperCase();
+
+
+  if (!curp) {
+    return;
+  }
+
+
+  const ahora =
+    Date.now();
+
+
+  if (
+    curp === ultimoQR &&
+    ahora - ultimaLectura < 3000
+  ) {
+
+    return;
+
+  }
+
+
+  ultimoQR =
+    curp;
+
+
+  ultimaLectura =
+    ahora;
+
+
+  procesando =
+    true;
+
+
+  document
+    .getElementById(
+      'procesando'
+    )
+    .style
+    .display =
+    'block';
+
+
+  enviarRegistro(
+    curp,
+    movimientoActual
+  );
+
+}
+
+
+
+/*
+=================================================
+ENVÍA LOS DATOS A APPS SCRIPT
+MEDIANTE JSONP
+=================================================
+*/
+
+function enviarRegistro(
+  curp,
+  movimiento
+) {
+
+  const callback =
+    'respuestaQR_' +
+    Date.now();
+
+
+  const script =
+    document.createElement(
+      'script'
+    );
+
+
+  const limpiar =
+    () => {
+
+      try {
+        delete window[callback];
+      }
+      catch (e) {}
+
+
+      if (
+        script.parentNode
+      ) {
+
+        script.parentNode
+          .removeChild(
+            script
+          );
+
+      }
+
+    };
+
+
+  window[callback] =
+    function(resultado) {
+
+      limpiar();
+
+      procesando =
+        false;
+
+
+      document
+        .getElementById(
+          'procesando'
+        )
+        .style
+        .display =
+        'none';
+
+
+      procesarResultado(
+        resultado
+      );
+
+    };
+
+
+  script.onerror =
+    function() {
+
+      limpiar();
+
+      procesando =
+        false;
+
+
+      document
+        .getElementById(
+          'procesando'
+        )
+        .style
+        .display =
+        'none';
+
+
+      mostrarError(
+        'No fue posible comunicarse con Google Sheets.'
+      );
+
+    };
+
+
+  const parametros =
+    new URLSearchParams({
+
+      accion:
+        'registrar',
+
+      curp:
+        curp,
+
+      movimiento:
+        movimiento,
+
+      callback:
+        callback
+
+    });
+
+
+  script.src =
+    URL_API +
+    '?' +
+    parametros.toString();
+
+
+  document.body
+    .appendChild(
+      script
+    );
+
+}
+
+
+
+function procesarResultado(
+  resultado
+) {
+
+  if (!resultado) {
+
+    mostrarError(
+      'No se recibió respuesta.'
+    );
+
+    return;
+
+  }
+
+
+  if (
+    resultado.ok
+  ) {
+
+    mostrarCorrecto(
+      resultado
+    );
+
+    beep(
+      900,
+      0.12
+    );
+
+  }
+
+
+  else if (
+    resultado.tipo ===
+    'DUPLICADO'
+  ) {
+
+    mostrarDuplicado(
+      resultado
+    );
+
+    beep(
+      550,
+      0.18
+    );
+
+  }
+
+
+  else {
+
+    mostrarError(
+      resultado.mensaje ||
+      'Error desconocido.'
+    );
+
+    beep(
+      250,
+      0.25
+    );
+
+  }
+
+
+  setTimeout(
+    ocultarResultado,
+    3500
+  );
+
+}
+
+
+
+function mostrarCorrecto(
+  resultado
+) {
+
+  const alumno =
+    resultado.alumno;
+
+
+  const nombre =
+    [
+
+      alumno.nombre,
+
+      alumno.primerApellido,
+
+      alumno.segundoApellido
+
+    ]
+    .filter(Boolean)
+    .join(' ');
+
+
+  const div =
+    document
+      .getElementById(
+        'resultado'
+      );
+
+
+  div.className =
+    'resultado correcto';
+
+
+  div.innerHTML = `
+
+    <div class="resultadoTitulo">
+      ✓ REGISTRO CORRECTO
+    </div>
+
+    <div class="nombre">
+      ${escapar(nombre)}
+    </div>
+
+    <div class="datos">
+
+      ${escapar(alumno.grado)}°
+      ${escapar(alumno.grupo)}
+
+      <br>
+
+      ${escapar(alumno.turno)}
+
+    </div>
+
+    <div class="movimientoResultado">
+      ${escapar(resultado.movimiento)}
+    </div>
+
+    <div class="datos">
+
+      ${escapar(resultado.fecha)}
+
+      &nbsp;
+
+      ${escapar(resultado.hora)}
+
+    </div>
+
+  `;
+
+
+  div.style.display =
+    'block';
+
+}
+
+
+
+function mostrarDuplicado(
+  resultado
+) {
+
+  const div =
+    document
+      .getElementById(
+        'resultado'
+      );
+
+
+  div.className =
+    'resultado duplicado';
+
+
+  div.innerHTML = `
+
+    <div class="resultadoTitulo">
+
+      ⚠ REGISTRO DUPLICADO
+
+    </div>
+
+    <div class="datos">
+
+      ${escapar(
+        resultado.mensaje
+      )}
+
+    </div>
+
+  `;
+
+
+  div.style.display =
+    'block';
+
+}
+
+
+
+function mostrarError(
+  mensaje
+) {
+
+  const div =
+    document
+      .getElementById(
+        'resultado'
+      );
+
+
+  div.className =
+    'resultado error';
+
+
+  div.innerHTML = `
+
+    <div class="resultadoTitulo">
+
+      ✕ ERROR
+
+    </div>
+
+    <div class="datos">
+
+      ${escapar(mensaje)}
+
+    </div>
+
+  `;
+
+
+  div.style.display =
+    'block';
+
+}
+
+
+
+function ocultarResultado() {
+
+  document
+    .getElementById(
+      'resultado'
+    )
+    .style
+    .display =
+    'none';
+
+}
+
+
+
+function escapar(
+  texto
+) {
+
+  const div =
+    document.createElement(
+      'div'
+    );
+
+
+  div.textContent =
+    String(
+      texto ?? ''
+    );
+
+
+  return div.innerHTML;
+
+}
+
+
+
+function beep(
+  frecuencia,
+  duracion
+) {
+
+  try {
+
+    const contexto =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+
+    const osc =
+      contexto
+        .createOscillator();
+
+
+    const gain =
+      contexto
+        .createGain();
+
+
+    osc.connect(
+      gain
+    );
+
+
+    gain.connect(
+      contexto.destination
+    );
+
+
+    osc.frequency.value =
+      frecuencia;
+
+
+    gain.gain.value =
+      0.08;
+
+
+    osc.start();
+
+
+    setTimeout(
+      function() {
+
+        osc.stop();
+
+        contexto.close();
+
+      },
+
+      duracion * 1000
+    );
+
+  }
+
+  catch (e) {}
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
