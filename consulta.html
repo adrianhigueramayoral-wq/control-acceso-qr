@@ -1,1 +1,1232 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,
+           initial-scale=1,
+           maximum-scale=1,
+           user-scalable=no">
+
+<title>Consulta de Entradas y Salidas</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f6f9;
+  color: #1f2937;
+}
+
+.app {
+  max-width: 520px;
+  margin: auto;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.header {
+  background: #173b65;
+  color: white;
+  text-align: center;
+  padding: 22px 16px;
+}
+
+.escuela {
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.3;
+}
+
+.titulo {
+  margin-top: 7px;
+  font-size: 15px;
+}
+
+.contenido {
+  padding: 18px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border: 2px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 17px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #2563eb;
+}
+
+#curp {
+  text-transform: uppercase;
+}
+
+#codigo {
+  text-transform: uppercase;
+}
+
+.btnConsultar {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #173b65;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btnConsultar:disabled {
+  opacity: .6;
+}
+
+#procesando {
+  display: none;
+  margin-top: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: #173b65;
+}
+
+#error {
+  display: none;
+  margin-top: 15px;
+  padding: 14px;
+  border-radius: 10px;
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+  color: #991b1b;
+  text-align: center;
+  font-weight: bold;
+}
+
+#resultado {
+  display: none;
+}
+
+.alumnoNombre {
+  font-size: 23px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.alumnoDatos {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 17px;
+  color: #4b5563;
+}
+
+.estado {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.estadoDentro {
+  background: #dcfce7;
+  border: 2px solid #22c55e;
+  color: #166534;
+}
+
+.estadoSalida {
+  background: #dbeafe;
+  border: 2px solid #3b82f6;
+  color: #1e40af;
+}
+
+.estadoSinRegistro {
+  background: #f3f4f6;
+  border: 2px solid #9ca3af;
+  color: #374151;
+}
+
+.estadoTitulo {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.estadoTexto {
+  margin-top: 5px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.hoyTitulo {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 14px;
+}
+
+.movimientosHoy {
+  display: flex;
+  gap: 10px;
+}
+
+.movimientoHoy {
+  flex: 1;
+  padding: 14px 8px;
+  border-radius: 10px;
+  text-align: center;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.tipoMovimiento {
+  font-size: 14px;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.horaMovimiento {
+  margin-top: 5px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.historialTitulo {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.tablaContenedor {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 11px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  background: #f8fafc;
+  font-weight: bold;
+}
+
+.movEntrada {
+  color: #166534;
+  font-weight: bold;
+}
+
+.movSalida {
+  color: #1e40af;
+  font-weight: bold;
+}
+
+.sinRegistros {
+  text-align: center;
+  color: #6b7280;
+  padding: 18px;
+}
+
+.btnNuevaConsulta {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px;
+  border: 2px solid #173b65;
+  border-radius: 10px;
+  background: white;
+  color: #173b65;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.aviso {
+  margin-top: 15px;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  color: #6b7280;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="header">
+
+    <div class="escuela">
+      SECUNDARIA ERNESTO ROMERO LUCERO
+    </div>
+
+    <div class="titulo">
+      CONSULTA DE ENTRADAS Y SALIDAS
+    </div>
+
+  </div>
+
+  <div class="contenido">
+
+    <div
+      id="formulario"
+      class="card">
+
+      <label for="curp">
+        CURP DEL ALUMNO
+      </label>
+
+      <input
+        id="curp"
+        type="text"
+        maxlength="18"
+        autocomplete="off"
+        placeholder="Ingrese la CURP">
+
+      <label for="codigo">
+        CÓDIGO
+      </label>
+
+      <input
+        id="codigo"
+        type="text"
+        maxlength="10"
+        autocomplete="off"
+        placeholder="Ingrese el código">
+
+      <button
+        id="btnConsultar"
+        class="btnConsultar"
+        onclick="consultar()">
+
+        CONSULTAR
+
+      </button>
+
+      <div id="procesando">
+        Consultando información...
+      </div>
+
+      <div id="error"></div>
+
+      <div class="aviso">
+        La información mostrada corresponde exclusivamente
+        al alumno asociado con la CURP y código proporcionados.
+      </div>
+
+    </div>
+
+
+    <div id="resultado">
+
+      <div class="card">
+
+        <div
+          id="nombreAlumno"
+          class="alumnoNombre">
+        </div>
+
+        <div
+          id="datosAlumno"
+          class="alumnoDatos">
+        </div>
+
+        <div
+          id="estadoActual"
+          class="estado">
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="hoyTitulo">
+          REGISTRO DE HOY
+        </div>
+
+        <div
+          id="fechaHoy"
+          style="
+            margin-bottom:12px;
+            font-size:14px;
+            color:#6b7280;
+          ">
+        </div>
+
+        <div class="movimientosHoy">
+
+          <div class="movimientoHoy">
+
+            <div class="tipoMovimiento">
+              ENTRADA
+            </div>
+
+            <div
+              id="horaEntrada"
+              class="horaMovimiento">
+              --
+            </div>
+
+          </div>
+
+          <div class="movimientoHoy">
+
+            <div class="tipoMovimiento">
+              SALIDA
+            </div>
+
+            <div
+              id="horaSalida"
+              class="horaMovimiento">
+              --
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="card">
+
+        <div class="historialTitulo">
+          HISTORIAL RECIENTE
+        </div>
+
+        <div
+          id="historial"
+          class="tablaContenedor">
+        </div>
+
+      </div>
+
+
+      <button
+        class="btnNuevaConsulta"
+        onclick="nuevaConsulta()">
+
+        REALIZAR OTRA CONSULTA
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/*
+=================================================
+PEGA AQUÍ LA MISMA URL /exec
+DE TU APLICACIÓN DE GOOGLE APPS SCRIPT
+=================================================
+*/
+
+const URL_API =
+  'https://script.google.com/macros/s/AKfycbxeeSfxFcOKTFAbm8HMa8fGm_xpCAafd_HDfChpsBkiDoQbNMwG80ZjT0u1Ck1J4R1O/exec';
+
+
+let consultando =
+  false;
+
+
+function consultar() {
+
+  if (consultando) {
+    return;
+  }
+
+
+  const curp =
+    limpiarTexto(
+      document
+        .getElementById('curp')
+        .value
+    );
+
+
+  const codigo =
+    limpiarTexto(
+      document
+        .getElementById('codigo')
+        .value
+    );
+
+
+  ocultarError();
+
+
+  if (!curp) {
+
+    mostrarError(
+      'Ingresa la CURP del alumno.'
+    );
+
+    return;
+  }
+
+
+  if (!codigo) {
+
+    mostrarError(
+      'Ingresa el código.'
+    );
+
+    return;
+  }
+
+
+  if (
+    URL_API.includes(
+      'PEGA_AQUI'
+    )
+  ) {
+
+    mostrarError(
+      'La página todavía no tiene configurada la URL de Apps Script.'
+    );
+
+    return;
+  }
+
+
+  consultando =
+    true;
+
+
+  const boton =
+    document
+      .getElementById(
+        'btnConsultar'
+      );
+
+
+  boton.disabled =
+    true;
+
+
+  document
+    .getElementById(
+      'procesando'
+    )
+    .style
+    .display =
+    'block';
+
+
+  enviarConsulta(
+    curp,
+    codigo
+  );
+
+}
+
+
+function enviarConsulta(
+  curp,
+  codigo
+) {
+
+  const callback =
+    'respuestaConsulta_' +
+    Date.now();
+
+
+  const script =
+    document.createElement(
+      'script'
+    );
+
+
+  const limpiar =
+    () => {
+
+      try {
+
+        delete window[
+          callback
+        ];
+
+      }
+
+      catch (e) {}
+
+
+      if (
+        script.parentNode
+      ) {
+
+        script.parentNode
+          .removeChild(
+            script
+          );
+
+      }
+
+    };
+
+
+  window[callback] =
+    function(resultado) {
+
+      limpiar();
+
+
+      consultando =
+        false;
+
+
+      document
+        .getElementById(
+          'btnConsultar'
+        )
+        .disabled =
+        false;
+
+
+      document
+        .getElementById(
+          'procesando'
+        )
+        .style
+        .display =
+        'none';
+
+
+      procesarConsulta(
+        resultado
+      );
+
+    };
+
+
+  script.onerror =
+    function() {
+
+      limpiar();
+
+
+      consultando =
+        false;
+
+
+      document
+        .getElementById(
+          'btnConsultar'
+        )
+        .disabled =
+        false;
+
+
+      document
+        .getElementById(
+          'procesando'
+        )
+        .style
+        .display =
+        'none';
+
+
+      mostrarError(
+        'No fue posible comunicarse con el sistema.'
+      );
+
+    };
+
+
+  const parametros =
+    new URLSearchParams({
+
+      accion:
+        'consultar',
+
+      curp:
+        curp,
+
+      codigo:
+        codigo,
+
+      callback:
+        callback
+
+    });
+
+
+  script.src =
+    URL_API +
+    '?' +
+    parametros.toString();
+
+
+  document.body
+    .appendChild(
+      script
+    );
+
+}
+
+
+function procesarConsulta(
+  resultado
+) {
+
+  if (
+    !resultado ||
+    !resultado.ok
+  ) {
+
+    mostrarError(
+      resultado &&
+      resultado.mensaje
+        ? resultado.mensaje
+        : 'No fue posible realizar la consulta.'
+    );
+
+    return;
+
+  }
+
+
+  const alumno =
+    resultado.alumno;
+
+
+  const nombreCompleto =
+    [
+
+      alumno.nombre,
+
+      alumno.primerApellido,
+
+      alumno.segundoApellido
+
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+
+  document
+    .getElementById(
+      'nombreAlumno'
+    )
+    .textContent =
+    nombreCompleto;
+
+
+  document
+    .getElementById(
+      'datosAlumno'
+    )
+    .innerHTML =
+
+    escapar(
+      alumno.grado
+    ) +
+    '° ' +
+    escapar(
+      alumno.grupo
+    ) +
+    ' &nbsp; • &nbsp; ' +
+    escapar(
+      alumno.turno
+    );
+
+
+  mostrarEstado(
+    resultado.estadoActual
+  );
+
+
+  document
+    .getElementById(
+      'fechaHoy'
+    )
+    .textContent =
+    resultado.hoy &&
+    resultado.hoy.fecha
+      ? resultado.hoy.fecha
+      : '';
+
+
+  document
+    .getElementById(
+      'horaEntrada'
+    )
+    .textContent =
+    resultado.hoy &&
+    resultado.hoy.entrada
+      ? resultado.hoy.entrada
+      : '--';
+
+
+  document
+    .getElementById(
+      'horaSalida'
+    )
+    .textContent =
+    resultado.hoy &&
+    resultado.hoy.salida
+      ? resultado.hoy.salida
+      : '--';
+
+
+  mostrarHistorial(
+    resultado.historial || []
+  );
+
+
+  document
+    .getElementById(
+      'formulario'
+    )
+    .style
+    .display =
+    'none';
+
+
+  document
+    .getElementById(
+      'resultado'
+    )
+    .style
+    .display =
+    'block';
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+function mostrarEstado(
+  estado
+) {
+
+  const contenedor =
+    document
+      .getElementById(
+        'estadoActual'
+      );
+
+
+  const valor =
+    String(
+      estado || 'SIN REGISTRO'
+    )
+      .toUpperCase();
+
+
+  if (
+    valor ===
+    'DENTRO DE LA ESCUELA'
+  ) {
+
+    contenedor.className =
+      'estado estadoDentro';
+
+
+    contenedor.innerHTML = `
+
+      <div class="estadoTitulo">
+        ESTADO ACTUAL
+      </div>
+
+      <div class="estadoTexto">
+        🟢 DENTRO DE LA ESCUELA
+      </div>
+
+    `;
+
+  }
+
+
+  else if (
+    valor ===
+    'SALIDA REGISTRADA'
+  ) {
+
+    contenedor.className =
+      'estado estadoSalida';
+
+
+    contenedor.innerHTML = `
+
+      <div class="estadoTitulo">
+        ESTADO ACTUAL
+      </div>
+
+      <div class="estadoTexto">
+        🔵 SALIDA REGISTRADA
+      </div>
+
+    `;
+
+  }
+
+
+  else {
+
+    contenedor.className =
+      'estado estadoSinRegistro';
+
+
+    contenedor.innerHTML = `
+
+      <div class="estadoTitulo">
+        ESTADO ACTUAL
+      </div>
+
+      <div class="estadoTexto">
+        SIN REGISTRO
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+function mostrarHistorial(
+  registros
+) {
+
+  const contenedor =
+    document
+      .getElementById(
+        'historial'
+      );
+
+
+  if (
+    !registros ||
+    registros.length === 0
+  ) {
+
+    contenedor.innerHTML = `
+
+      <div class="sinRegistros">
+
+        No existen registros
+        de entrada o salida
+        para este alumno.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>FECHA</th>
+
+          <th>HORA</th>
+
+          <th>MOVIMIENTO</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+  `;
+
+
+  registros.forEach(
+    registro => {
+
+      const movimiento =
+        String(
+          registro.movimiento || ''
+        )
+          .toUpperCase();
+
+
+      const clase =
+        movimiento === 'ENTRADA'
+          ? 'movEntrada'
+          : 'movSalida';
+
+
+      html += `
+
+        <tr>
+
+          <td>
+            ${escapar(
+              registro.fecha
+            )}
+          </td>
+
+          <td>
+            ${escapar(
+              registro.hora
+            )}
+          </td>
+
+          <td
+            class="${clase}">
+
+            ${escapar(
+              movimiento
+            )}
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  html += `
+
+      </tbody>
+
+    </table>
+
+  `;
+
+
+  contenedor.innerHTML =
+    html;
+
+}
+
+
+function nuevaConsulta() {
+
+  document
+    .getElementById(
+      'resultado'
+    )
+    .style
+    .display =
+    'none';
+
+
+  document
+    .getElementById(
+      'formulario'
+    )
+    .style
+    .display =
+    'block';
+
+
+  document
+    .getElementById(
+      'curp'
+    )
+    .value =
+    '';
+
+
+  document
+    .getElementById(
+      'codigo'
+    )
+    .value =
+    '';
+
+
+  ocultarError();
+
+
+  document
+    .getElementById(
+      'curp'
+    )
+    .focus();
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+
+
+function mostrarError(
+  mensaje
+) {
+
+  const div =
+    document
+      .getElementById(
+        'error'
+      );
+
+
+  div.textContent =
+    mensaje;
+
+
+  div.style.display =
+    'block';
+
+}
+
+
+function ocultarError() {
+
+  document
+    .getElementById(
+      'error'
+    )
+    .style
+    .display =
+    'none';
+
+}
+
+
+function limpiarTexto(
+  valor
+) {
+
+  return String(
+    valor || ''
+  )
+    .trim()
+    .toUpperCase()
+    .replace(
+      /\s+/g,
+      ''
+    );
+
+}
+
+
+function escapar(
+  valor
+) {
+
+  const div =
+    document
+      .createElement(
+        'div'
+      );
+
+
+  div.textContent =
+    String(
+      valor ?? ''
+    );
+
+
+  return div.innerHTML;
+
+}
+
+
+/*
+Permitir ENTER en los campos.
+*/
+
+document
+  .getElementById(
+    'curp'
+  )
+  .addEventListener(
+    'keydown',
+    function(event) {
+
+      if (
+        event.key === 'Enter'
+      ) {
+
+        document
+          .getElementById(
+            'codigo'
+          )
+          .focus();
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById(
+    'codigo'
+  )
+  .addEventListener(
+    'keydown',
+    function(event) {
+
+      if (
+        event.key === 'Enter'
+      ) {
+
+        consultar();
+
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+
+</html>
